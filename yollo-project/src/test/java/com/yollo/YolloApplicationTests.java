@@ -1,13 +1,13 @@
-package com.yollo.yollo_project;
+package com.yollo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class YolloProjectApplicationTests {
+class YolloApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
