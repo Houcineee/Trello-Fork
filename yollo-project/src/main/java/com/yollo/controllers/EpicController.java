@@ -1,28 +1,22 @@
 package com.yollo.controllers;
 
-import com.yollo.dtos.EpicPatchDTO;
-import com.yollo.dtos.EpicRequestDTO;
-import com.yollo.dtos.EpicResponseDTO;
+import com.yollo.dtos.*;
 import com.yollo.services.EpicService;
+import com.yollo.services.UserStoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/epics") // base url
+@RequiredArgsConstructor
 public class EpicController {
-    EpicService epicService;
+    private final UserStoryService userStoryService;
+    private final EpicService epicService;
 
-    public EpicController(EpicService epicService) {
-        this.epicService = epicService;
-    }
-
-   @GetMapping("/product/{productId}")
-    public List<EpicResponseDTO> getEpicsByProjectId(@PathVariable Long productId) {
-       return epicService.getEpicsByProjectId(productId);
-    }
 
 
     @GetMapping("/{epicId}")
@@ -43,10 +37,22 @@ public class EpicController {
     }
 
 
-    @DeleteMapping("/{epicId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+  @DeleteMapping("/{epicId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
     public  void deleteEpic(@PathVariable Long epicId) {
         epicService.deleteEpic(epicId);
     }
+
+  @GetMapping("/{epicId}/stories")
+    public List<UserStoryResponseDTO> getUserStoriesByEpicId(@PathVariable Long epicId) {
+        return userStoryService.getUserStoriesByEpicId(epicId) ;
+    }
+
+  @PostMapping("/{epicId}/stories")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserStoryResponseDTO createUserStory(@PathVariable Long epicId, @RequestBody @Valid UserStoryRequestDTO userStoryRequestDTO) {
+        return userStoryService.createUserStory(epicId, userStoryRequestDTO);
+    }
+
 
 }

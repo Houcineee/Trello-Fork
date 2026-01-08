@@ -15,21 +15,16 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private ProductRepository productRepository;
-    private ProductMapper productMapper;
-    private UserRepository userRepository;
-    private UserMapper userMapper;
-
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, UserRepository userRepository, UserMapper userMapper) {
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public ProductResponseDTO createProduct(Long currentUserId, ProductRequestDTO productRequestDTO) {

@@ -1,11 +1,11 @@
 package com.yollo.dtos;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record ProductRequestDTO(
-        @NotNull(message = "Project name must not be empty")
+        @NotBlank(message = "Project name must not be empty")
         String projectName,
-        @NotNull(message = "Project description must not be empty")
+        @NotBlank(message = "Project description must not be empty")
         String description
 ) {
 }

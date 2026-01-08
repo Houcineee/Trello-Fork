@@ -15,6 +15,8 @@ public class Task extends BaseEntity {
     private String title;
     private String description;
     private String feedback ; // for the tester
+
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
 

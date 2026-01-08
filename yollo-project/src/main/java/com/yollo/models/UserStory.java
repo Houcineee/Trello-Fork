@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,13 +23,17 @@ public class UserStory extends BaseEntity {
     private String title;
     private String description;
     private Integer storyPoints;
+
+    @Enumerated(EnumType.STRING)
     private UserStoryPriority priority;
+
+    @Enumerated(EnumType.STRING)
     private UserStoryStatus status;
 
 
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,7 +50,7 @@ public class UserStory extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "sprint_backlog_id")
     )
     @ToString.Exclude
-    private Set<SprintBacklog> sprintBacklogs;
+    private Set<SprintBacklog> sprintBacklogs = new HashSet<>();
 
 
 }

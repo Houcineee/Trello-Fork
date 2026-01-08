@@ -13,19 +13,16 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class EpicServiceImpl implements EpicService {
-    EpicMapper epicMapper;
-    EpicRepository epicRepository;
-    ProductRepository productRepository;
+    private final EpicMapper epicMapper;
+    private final EpicRepository epicRepository;
+    private final ProductRepository productRepository;
 
-    public EpicServiceImpl(EpicMapper epicMapper, EpicRepository epicRepository , ProductRepository productRepository) {
-        this.epicMapper = epicMapper;
-        this.epicRepository = epicRepository;
-        this.productRepository = productRepository;
-    }
     @Override
     public List<EpicResponseDTO> getEpicsByProjectId(Long productId) {
         // check if the project exists
