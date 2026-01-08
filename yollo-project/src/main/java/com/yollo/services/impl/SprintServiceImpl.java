@@ -24,7 +24,7 @@ public class SprintServiceImpl implements SprintService {
     private final ProductRepository productRepository ;
 
     @Override
-    public List<SprintResponseDTO> findSprintsByProductId(Long productId) {
+    public List<SprintResponseDTO> getSprintsByProductId(Long productId) {
         ProductBacklog productBacklog = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found")) ;
 
@@ -35,7 +35,7 @@ public class SprintServiceImpl implements SprintService {
     }
 
     @Override
-    public SprintResponseDTO findSprintById(Long id) {
+    public SprintResponseDTO getSprintById(Long id) {
         SprintBacklog sprintBacklog =  sprintRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sprint not found"));
         return sprintMapper.toDTO(sprintBacklog) ;

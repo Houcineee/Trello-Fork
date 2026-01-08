@@ -16,6 +16,7 @@ import java.util.List;
 @ToString
 public class Epic extends BaseEntity {
     private String title;
+    private String description;
 
     @OneToMany(mappedBy = "epic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude

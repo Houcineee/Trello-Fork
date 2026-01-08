@@ -1,15 +1,19 @@
 package com.yollo.dtos;
 
 import com.yollo.models.enums.UserRole;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record UserRequestDTO(
         @NotBlank(message = "Username must not be empty")
         String username,
         @NotBlank(message = "email must not be empty")
+        @Email(message ="invalid email format")
         String email,
         @NotBlank(message = "password must not be empty")
+        @Size(min = 8, message = "Password must be at least 8 characters")
         String password,
         @NotNull(message = "role must not be empty")
         UserRole role

@@ -22,7 +22,6 @@ public interface EpicMapper {
     @Mapping(target="updatedAt", ignore = true)
     Epic toEntity(EpicRequestDTO epicRequestDTO);
 
-    @Mapping(target = "productBacklogId", source = "productBacklog.id")
     EpicResponseDTO toDTO(Epic epic);
 
     @Mapping(target = "id", ignore = true)

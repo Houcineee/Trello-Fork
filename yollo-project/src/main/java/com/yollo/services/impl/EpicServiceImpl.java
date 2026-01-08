@@ -44,9 +44,9 @@ public class EpicServiceImpl implements EpicService {
     }
 
     @Override
-    public EpicResponseDTO createEpic(EpicRequestDTO epicRequestDTO) {
+    public EpicResponseDTO createEpic(Long productId , EpicRequestDTO epicRequestDTO) {
         Epic epic = epicMapper.toEntity(epicRequestDTO);
-        ProductBacklog productBacklog = productRepository.findById(epicRequestDTO.productBacklogId())
+        ProductBacklog productBacklog = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product Backlog not found"));
         epic.setProductBacklog(productBacklog);
 

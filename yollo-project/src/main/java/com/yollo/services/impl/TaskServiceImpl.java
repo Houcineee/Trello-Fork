@@ -1,0 +1,111 @@
+package com.yollo.services.impl;
+
+
+import com.yollo.dtos.TaskPatchDTO;
+import com.yollo.dtos.TaskRequestDTO;
+import com.yollo.dtos.TaskResponseDTO;
+import com.yollo.mappers.TaskMapper;
+import com.yollo.models.Task;
+import com.yollo.models.User;
+import com.yollo.models.UserStory;
+import com.yollo.models.enums.TaskStatus;
+import com.yollo.repositories.TaskRepository;
+import com.yollo.repositories.UserRepository;
+import com.yollo.repositories.UserStoryRepository;
+import com.yollo.services.TaskService;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.List;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class TaskServiceImpl implements TaskService {
+    final private TaskRepository taskRepository;
+    final private UserStoryRepository userStoryRepository;
+    final private UserRepository userRepository;
+    final private TaskMapper taskMapper;
+
+
+    @Override
+    public List<TaskResponseDTO> getTasksByStoryId(Long storyId) {
+        UserStory userStory = userStoryRepository.findById(storyId)
+                .orElseThrow(() -> new RuntimeException("User Story not found")) ;
+
+        return userStory.getTasks()
+                .stream()
+                .map(taskMapper::toDTO)
+                .toList() ;
+    }
+
+    @Override
+    public TaskResponseDTO getTaskById(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        return taskMapper.toDTO(task) ;
+    }
+
+    @Override
+    @ResponseStatus(HttpStatus.CREATED)
+    public TaskResponseDTO createTask(Long userStoryId , TaskRequestDTO taskRequestDTO) {
+        UserStory userStory = userStoryRepository.findById(userStoryId)
+                .orElseThrow(() -> new RuntimeException("User Story not found")) ;
+        Task task = taskMapper.toEntity(taskRequestDTO) ;
+        task.setUserStory(userStory);
+        Task savedTask = taskRepository.save(task) ;
+        return taskMapper.toDTO(savedTask) ;
+    }
+
+    @Override
+    public TaskResponseDTO updateTask(Long taskId, TaskPatchDTO taskPatchDTO) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found")) ;
+
+        taskMapper.updateTaskFromPatch(taskPatchDTO, task);
+        return taskMapper.toDTO(task) ;
+    }
+
+    @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found")) ;
+        taskRepository.delete(task);
+    }
+
+    @Override
+    public void assignTaskToDeveloper(Long taskId, Long developerId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found")) ;
+
+        if(developerId == null){ // unassigning the developer
+            task.setDeveloper(null);
+        }else{// assigning the developer
+            User developer = userRepository.findById(developerId)
+                    .orElseThrow(() -> new RuntimeException("Developer not found")) ;
+            task.setDeveloper(developer);
+
+        }
+    }
+
+    @Override
+    public void assignTaskToTester(Long taskId, Long testerId) {
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found")) ;
+
+        if (testerId == null){ // unassigning the tester
+            task.setTester(null);
+        }else{ //   assigning the tester
+            User tester= userRepository.findById(testerId)
+                    .orElseThrow(() -> new RuntimeException("Tester not found")) ;
+
+            task.setTester(tester);
+        }
+
+    }
+}

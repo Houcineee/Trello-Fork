@@ -9,7 +9,7 @@ import java.util.List;
 public interface EpicService {
     List<EpicResponseDTO> getEpicsByProjectId(Long productId);
     EpicResponseDTO getEpicById(Long epicId);
-    EpicResponseDTO createEpic( EpicRequestDTO epicRequestDTO);
+    EpicResponseDTO createEpic( Long productId  , EpicRequestDTO epicRequestDTO);
     EpicResponseDTO updateEpic(Long epicId, EpicPatchDTO epicPatchDTO);
     void deleteEpic(Long epicId);
 }

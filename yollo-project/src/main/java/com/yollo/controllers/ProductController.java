@@ -69,7 +69,7 @@ public class ProductController {
 
     @GetMapping("/{productId}/sprints")
     public List<SprintResponseDTO> getSprints(@PathVariable Long productId) {
-        return sprintService.findSprintsByProductId(productId);
+        return sprintService.getSprintsByProductId(productId);
     }
 
 
@@ -84,5 +84,9 @@ public class ProductController {
     }
 
 
-
+    @PostMapping("/{productId}/epics")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EpicResponseDTO createEpic(@PathVariable Long productId, @RequestBody @Valid EpicRequestDTO epicRequestDTO) {
+        return epicService.createEpic(productId, epicRequestDTO);
+    }
 }

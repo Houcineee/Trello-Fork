@@ -20,7 +20,7 @@ public class SprintController {
 
     @GetMapping("/{sprintId}")
     public SprintResponseDTO getSprintById(@PathVariable Long sprintId) {
-        return sprintService.findSprintById(sprintId);
+        return sprintService.getSprintById(sprintId);
     }
 
     @GetMapping("/{sprintId}/stories")

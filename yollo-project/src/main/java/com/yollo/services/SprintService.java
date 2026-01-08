@@ -7,8 +7,8 @@ import com.yollo.dtos.SprintResponseDTO;
 import java.util.List;
 
 public interface SprintService {
-    List<SprintResponseDTO> findSprintsByProductId(Long productId);
-    SprintResponseDTO findSprintById(Long id);
+    List<SprintResponseDTO> getSprintsByProductId(Long productId);
+    SprintResponseDTO getSprintById(Long id);
     SprintResponseDTO createSprint(Long productBacklogId , SprintRequestDTO sprintRequestDTO);
     SprintResponseDTO updateSprint(Long sprintId, SprintPatchDTO sprintPatchDTO);
     void deleteSprint(Long sprintId);

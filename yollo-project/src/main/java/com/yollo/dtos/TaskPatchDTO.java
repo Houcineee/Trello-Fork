@@ -2,11 +2,10 @@ package com.yollo.dtos;
 
 import java.time.LocalDateTime;
 
-public record EpicResponseDTO(
-        Long id ,
+public record TaskPatchDTO(
         String title,
         String description,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        String feedback,
+        String status
 ) {
 }

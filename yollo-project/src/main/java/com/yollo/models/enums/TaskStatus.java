@@ -3,7 +3,7 @@ package com.yollo.models.enums;
 public enum TaskStatus {
     TODO,
     IN_PROGRESS,
-    DONE,
+    READY_FOR_TEST,
     IN_TESTING,
     DECLINED,
     APPROVED,

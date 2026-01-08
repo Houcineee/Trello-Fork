@@ -24,11 +24,6 @@ public class EpicController {
         return epicService.getEpicById(epicId);
     }
 
-   @PostMapping
-   @ResponseStatus(HttpStatus.CREATED)
-   public EpicResponseDTO createEpic(@RequestBody EpicRequestDTO epicRequestDTO) {
-         return epicService.createEpic(epicRequestDTO);
-   }
 
 
   @PatchMapping("/{epicId}")
