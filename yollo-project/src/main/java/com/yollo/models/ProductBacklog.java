@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -16,16 +18,17 @@ import java.util.Set;
 @ToString
 @NoArgsConstructor
 public class ProductBacklog extends BaseEntity {
-    private String ProjectName;
+    private String projectName;
+    private String description;
 
     @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<Epic> epic ;
+    private List<Epic> epic =  new ArrayList<>(); ;
 
 
     @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<SprintBacklog> sprintBacklogs ;
+    private List<SprintBacklog> sprintBacklogs =  new ArrayList<>() ;
 
 
     @ManyToMany(fetch = FetchType.LAZY ,
@@ -37,5 +40,5 @@ public class ProductBacklog extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @ToString.Exclude
-    private Set<User> members;
+    private Set<User> members =  new HashSet<>();
 }

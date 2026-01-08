@@ -16,9 +16,7 @@ import java.util.List;
 @ToString
 public class Epic extends BaseEntity {
     private String title;
-    private String description;
 
-    // TODO : projectBacklog_id foreign key
     @OneToMany(mappedBy = "epic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<UserStory> userStories;
