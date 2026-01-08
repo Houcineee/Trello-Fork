@@ -25,7 +25,7 @@ public class Task extends BaseEntity {
     @JoinColumn(name = "user_story_id")
     private UserStory userStory;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="developer_id")
     @ToString.Exclude // to avoid circular references
     private User developer;

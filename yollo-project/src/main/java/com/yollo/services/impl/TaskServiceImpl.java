@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -107,5 +108,13 @@ public class TaskServiceImpl implements TaskService {
             task.setTester(tester);
         }
 
+    }
+
+    @Override
+    public List<TaskResponseDTO> getTasksByUserId(Long userId) {
+        List<Task> tasksAsDeveloper = taskRepository.findByDeveloperId(userId);
+        List<Task> tasksAsTester = taskRepository.findByTesterId(userId);
+        return Stream.concat(tasksAsTester.stream(), tasksAsDeveloper.stream())
+                .map(taskMapper::toDTO).toList();
     }
 }

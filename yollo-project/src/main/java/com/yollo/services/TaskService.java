@@ -15,4 +15,6 @@ public interface TaskService {
     void deleteTask(Long taskId);
     void assignTaskToDeveloper(Long taskId, Long developerId);
     void assignTaskToTester(Long taskId, Long testerId);
+    List<TaskResponseDTO> getTasksByUserId(Long userId);
+
 }
