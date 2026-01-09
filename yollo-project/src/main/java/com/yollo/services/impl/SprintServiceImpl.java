@@ -9,8 +9,8 @@ import com.yollo.models.SprintBacklog;
 import com.yollo.repositories.ProductRepository;
 import com.yollo.repositories.SprintRepository;
 import com.yollo.services.SprintService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -9,11 +9,11 @@ import com.yollo.models.ProductBacklog;
 import com.yollo.repositories.EpicRepository;
 import com.yollo.repositories.ProductRepository;
 import com.yollo.services.EpicService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional

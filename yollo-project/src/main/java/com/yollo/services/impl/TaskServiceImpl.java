@@ -8,16 +8,15 @@ import com.yollo.mappers.TaskMapper;
 import com.yollo.models.Task;
 import com.yollo.models.User;
 import com.yollo.models.UserStory;
-import com.yollo.models.enums.TaskStatus;
 import com.yollo.repositories.TaskRepository;
 import com.yollo.repositories.UserRepository;
 import com.yollo.repositories.UserStoryRepository;
 import com.yollo.services.TaskService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Stream;

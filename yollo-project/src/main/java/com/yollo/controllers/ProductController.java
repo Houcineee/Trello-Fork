@@ -6,6 +6,7 @@ import com.yollo.services.ProductService;
 import com.yollo.services.SprintService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,72 +22,72 @@ public class ProductController {
 
 
     @GetMapping("user/{userId}")
-    public List<ProductResponseDTO> getProductsByUserId(@PathVariable  Long userId) {
-        return productService.getProductForUser(userId);
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByUserId(@PathVariable  Long userId) {
+        return ResponseEntity.ok(productService.getProductForUser(userId));
     }
 
     @PostMapping("user/{userId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponseDTO createProduct(@PathVariable  Long userId, @RequestBody @Valid ProductRequestDTO productRequestDTO) {
-        return productService.createProduct(userId, productRequestDTO);
+    public ResponseEntity<ProductResponseDTO> createProduct(@PathVariable  Long userId, @RequestBody @Valid ProductRequestDTO productRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(userId, productRequestDTO));
     }
 
 
 
     @PatchMapping("/{productId}")
-    public ProductResponseDTO updateProduct(@PathVariable Long productId, @RequestBody ProductPatchDTO productPatchDTO) {
-        return productService.updateProduct(productId, productPatchDTO);
+    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long productId, @RequestBody ProductPatchDTO productPatchDTO) {
+        return ResponseEntity.ok(productService.updateProduct(productId, productPatchDTO));
     }
 
 
    @GetMapping("/{productId}")
-   public ProductResponseDTO getProductById(@PathVariable Long productId) {
-         return productService.getProductById(productId);
+   public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long productId) {
+         return ResponseEntity.ok(productService.getProductById(productId));
    }
 
 
 
     @GetMapping("/{productId}/members")
-    public List<UserResponseDTO> getMembers(@PathVariable Long productId) {
-        return productService.getMembers(productId);
+    public ResponseEntity<List<UserResponseDTO>> getMembers(@PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getMembers(productId));
     }
 
     @PostMapping("/{productId}/members/{userId}")
-    public void inviteMember(@PathVariable Long productId, @PathVariable  Long userId) {
+    public ResponseEntity<Void> inviteMember(@PathVariable Long productId, @PathVariable  Long userId) {
         productService.inviteMember(productId, userId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{productId}/members/{userId}")
-    public void removeMember(@PathVariable Long productId, @PathVariable Long userId) {
+    public ResponseEntity<Void> removeMember(@PathVariable Long productId, @PathVariable Long userId) {
         productService.removeMember(productId, userId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{productId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProduct(@PathVariable Long productId) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/{productId}/sprints")
-    public List<SprintResponseDTO> getSprints(@PathVariable Long productId) {
-        return sprintService.getSprintsByProductId(productId);
+    public ResponseEntity<List<SprintResponseDTO>> getSprints(@PathVariable Long productId) {
+        return ResponseEntity.ok(sprintService.getSprintsByProductId(productId));
     }
 
 
     @PostMapping("/{productId}/sprints")
-    public SprintResponseDTO createSprint(@PathVariable Long productId, @RequestBody @Valid SprintRequestDTO sprintRequestDTO) {
-        return sprintService.createSprint(productId, sprintRequestDTO);
+    public ResponseEntity<SprintResponseDTO> createSprint(@PathVariable Long productId, @RequestBody @Valid SprintRequestDTO sprintRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(sprintService.createSprint(productId, sprintRequestDTO));
     }
 
     @GetMapping("/{productId}/epics")
-    public List<EpicResponseDTO> getEpicsByProjectId(@PathVariable Long productId) {
-        return epicService.getEpicsByProjectId(productId);
+    public ResponseEntity<List<EpicResponseDTO>> getEpicsByProjectId(@PathVariable Long productId) {
+        return ResponseEntity.ok(epicService.getEpicsByProjectId(productId));
     }
 
 
     @PostMapping("/{productId}/epics")
-    @ResponseStatus(HttpStatus.CREATED)
-    public EpicResponseDTO createEpic(@PathVariable Long productId, @RequestBody @Valid EpicRequestDTO epicRequestDTO) {
-        return epicService.createEpic(productId, epicRequestDTO);
+    public ResponseEntity<EpicResponseDTO> createEpic(@PathVariable Long productId, @RequestBody @Valid EpicRequestDTO epicRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(epicService.createEpic(productId, epicRequestDTO));
     }
 }

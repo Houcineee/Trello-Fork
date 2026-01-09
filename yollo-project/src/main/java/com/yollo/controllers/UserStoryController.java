@@ -7,6 +7,8 @@ import com.yollo.dtos.UserStoryResponseDTO;
 import com.yollo.services.TaskService;
 import com.yollo.services.UserStoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,35 +22,37 @@ public class UserStoryController {
 
 
     @GetMapping("{storyId}")
-    public UserStoryResponseDTO getUserStory(@PathVariable Long storyId) {
-        return userStoryService.getUserStoryById(storyId);
+    public ResponseEntity<UserStoryResponseDTO> getUserStory(@PathVariable Long storyId) {
+        return ResponseEntity.ok(userStoryService.getUserStoryById(storyId));
     }
 
     @PatchMapping("{storyId}")
-    public UserStoryResponseDTO updateUserStory(@PathVariable Long storyId, @RequestBody UserStoryPatchDTO userStoryPatchDTO) {
-        return userStoryService.updateUserStory(storyId,userStoryPatchDTO );
+    public ResponseEntity<UserStoryResponseDTO> updateUserStory(@PathVariable Long storyId, @RequestBody UserStoryPatchDTO userStoryPatchDTO) {
+        return ResponseEntity.ok(userStoryService.updateUserStory(storyId,userStoryPatchDTO ));
     }
 
     @PostMapping("{storyId}/sprint/{sprintId}")
-    public void assignUserStoryToSprint(@PathVariable Long storyId, @PathVariable Long sprintId) {
+    public ResponseEntity<Void> assignUserStoryToSprint(@PathVariable Long storyId, @PathVariable Long sprintId) {
         userStoryService.addUserStoryToSprint(storyId,sprintId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("{storyId}")
-    public void deleteUserStory(@PathVariable Long storyId) {
+    public ResponseEntity<Void> deleteUserStory(@PathVariable Long storyId) {
         userStoryService.deleteUserStory(storyId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
     @GetMapping("{storyId}/tasks")
-    public List<TaskResponseDTO> getUserStoryTask(@PathVariable Long storyId) {
-        return taskService.getTasksByStoryId(storyId);
+    public ResponseEntity<List<TaskResponseDTO>> getUserStoryTask(@PathVariable Long storyId) {
+        return ResponseEntity.ok(taskService.getTasksByStoryId(storyId));
 
     }
 
     @PostMapping("{storyId}/tasks")
-    public TaskResponseDTO createUserStoryTask(@PathVariable Long storyId, @RequestBody TaskRequestDTO taskRequestDTO) {
-        return taskService.createTask(storyId, taskRequestDTO);
+    public ResponseEntity<TaskResponseDTO> createUserStoryTask(@PathVariable Long storyId, @RequestBody TaskRequestDTO taskRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(storyId, taskRequestDTO));
     }
 
 }

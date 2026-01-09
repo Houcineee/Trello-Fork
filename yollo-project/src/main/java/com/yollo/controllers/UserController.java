@@ -5,11 +5,12 @@ import com.yollo.dtos.TaskResponseDTO;
 import com.yollo.dtos.UserPatchDTO;
 import com.yollo.dtos.UserRequestDTO;
 import com.yollo.dtos.UserResponseDTO;
-import com.yollo.models.Task;
 import com.yollo.services.TaskService;
 import com.yollo.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,29 +23,30 @@ public class UserController {
     final private TaskService taskService;
 
     @GetMapping("/{userId}")
-    public UserResponseDTO getUser(@PathVariable Long userId){
-        return userService.getUserById(userId);
+    public ResponseEntity<UserResponseDTO> getUser(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @PostMapping
-    public UserResponseDTO createUser(@RequestBody @Valid UserRequestDTO userRequestDTO){
-        return userService.createUser(userRequestDTO);
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO userRequestDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userRequestDTO));
 
     }
 
     @PatchMapping("/{userId}")
-    public UserResponseDTO updateUser(@PathVariable Long userId , @RequestBody @Valid UserPatchDTO userPatchDTO){
-        return userService.updateUser(userId, userPatchDTO);
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long userId , @RequestBody @Valid UserPatchDTO userPatchDTO){
+        return ResponseEntity.ok(userService.updateUser(userId, userPatchDTO));
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/{userId}/tasks")
-    public List<TaskResponseDTO> getUserTasks(@PathVariable Long userId){
-        return taskService.getTasksByUserId(userId);
+    public ResponseEntity<List<TaskResponseDTO>> getUserTasks(@PathVariable Long userId){
+        return ResponseEntity.ok(taskService.getTasksByUserId(userId));
     }
 
 

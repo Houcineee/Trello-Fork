@@ -5,6 +5,7 @@ import com.yollo.services.EpicService;
 import com.yollo.services.UserStoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,33 +21,32 @@ public class EpicController {
 
 
     @GetMapping("/{epicId}")
-    public EpicResponseDTO getEpicById(@PathVariable Long epicId) {
-        return epicService.getEpicById(epicId);
+    public ResponseEntity<EpicResponseDTO> getEpicById(@PathVariable Long epicId) {
+        return ResponseEntity.ok(epicService.getEpicById(epicId));
     }
 
 
 
   @PatchMapping("/{epicId}")
-    public EpicResponseDTO updateEpic(@PathVariable Long epicId, @RequestBody @Valid EpicPatchDTO epicPatchDTO) {
-        return epicService.updateEpic(epicId, epicPatchDTO);
+    public ResponseEntity<EpicResponseDTO> updateEpic(@PathVariable Long epicId, @RequestBody @Valid EpicPatchDTO epicPatchDTO) {
+        return ResponseEntity.ok(epicService.updateEpic(epicId, epicPatchDTO));
     }
 
 
   @DeleteMapping("/{epicId}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-    public  void deleteEpic(@PathVariable Long epicId) {
+    public  ResponseEntity<Void> deleteEpic(@PathVariable Long epicId) {
         epicService.deleteEpic(epicId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
   @GetMapping("/{epicId}/stories")
-    public List<UserStoryResponseDTO> getUserStoriesByEpicId(@PathVariable Long epicId) {
-        return userStoryService.getUserStoriesByEpicId(epicId) ;
+    public ResponseEntity<List<UserStoryResponseDTO>> getUserStoriesByEpicId(@PathVariable Long epicId) {
+        return ResponseEntity.ok(userStoryService.getUserStoriesByEpicId(epicId)) ;
     }
 
   @PostMapping("/{epicId}/stories")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserStoryResponseDTO createUserStory(@PathVariable Long epicId, @RequestBody @Valid UserStoryRequestDTO userStoryRequestDTO) {
-        return userStoryService.createUserStory(epicId, userStoryRequestDTO);
+    public ResponseEntity<UserStoryResponseDTO> createUserStory(@PathVariable Long epicId, @RequestBody @Valid UserStoryRequestDTO userStoryRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userStoryService.createUserStory(epicId, userStoryRequestDTO));
     }
 
 

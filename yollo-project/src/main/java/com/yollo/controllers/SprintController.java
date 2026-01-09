@@ -7,6 +7,8 @@ import com.yollo.dtos.UserStoryResponseDTO;
 import com.yollo.services.SprintService;
 import com.yollo.services.UserStoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,22 +21,23 @@ public class SprintController {
     private final UserStoryService userStoryService;
 
     @GetMapping("/{sprintId}")
-    public SprintResponseDTO getSprintById(@PathVariable Long sprintId) {
-        return sprintService.getSprintById(sprintId);
+    public ResponseEntity<SprintResponseDTO> getSprintById(@PathVariable Long sprintId) {
+        return ResponseEntity.ok(sprintService.getSprintById(sprintId));
     }
 
     @GetMapping("/{sprintId}/stories")
-    public List<UserStoryResponseDTO> getUserStories(@PathVariable Long sprintId) {
-        return userStoryService.getUserStoriesBySprintId(sprintId);
+    public ResponseEntity<List<UserStoryResponseDTO>> getUserStories(@PathVariable Long sprintId) {
+        return ResponseEntity.ok(userStoryService.getUserStoriesBySprintId(sprintId));
     }
 
     @PatchMapping("{sprintId}")
-    public SprintResponseDTO updateSprint(@PathVariable Long sprintId, @RequestBody SprintPatchDTO sprintPatchDTO) {
-        return sprintService.updateSprint(sprintId, sprintPatchDTO);
+    public ResponseEntity<SprintResponseDTO> updateSprint(@PathVariable Long sprintId, @RequestBody SprintPatchDTO sprintPatchDTO) {
+        return ResponseEntity.ok(sprintService.updateSprint(sprintId, sprintPatchDTO));
     }
 
     @DeleteMapping("{sprintId}")
-    public void deleteSprint(@PathVariable Long sprintId) {
+    public ResponseEntity<Void> deleteSprint(@PathVariable Long sprintId) {
         sprintService.deleteSprint(sprintId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -12,8 +12,8 @@ import com.yollo.repositories.EpicRepository;
 import com.yollo.repositories.SprintRepository;
 import com.yollo.repositories.UserStoryRepository;
 import com.yollo.services.UserStoryService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;

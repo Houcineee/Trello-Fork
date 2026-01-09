@@ -6,6 +6,8 @@ import com.yollo.dtos.TaskResponseDTO;
 import com.yollo.dtos.TesterTaskAssignmentDTO;
 import com.yollo.services.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,30 +18,31 @@ public class TaskController {
 
 
     @GetMapping("{taskId}")
-    public TaskResponseDTO getTask(@PathVariable Long taskId){
-        return taskService.getTaskById(taskId);
+    public ResponseEntity<TaskResponseDTO> getTask(@PathVariable Long taskId){
+        return ResponseEntity.ok(taskService.getTaskById(taskId));
     }
 
     @PatchMapping("{taskId}")
-    public TaskResponseDTO updateTask(@PathVariable Long taskId, @RequestBody TaskPatchDTO taskPatchDTO){
-        return taskService.updateTask(taskId, taskPatchDTO) ;
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long taskId, @RequestBody TaskPatchDTO taskPatchDTO){
+        return ResponseEntity.ok(taskService.updateTask(taskId, taskPatchDTO)) ;
     }
 
     @DeleteMapping("{taskId}")
-    public void deleteTask(@PathVariable Long taskId){
+    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId){
         taskService.deleteTask(taskId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("{taskId}/assignDev")
-    public void assignTaskToDev(@PathVariable Long taskId , @RequestBody DevTaskAssignmentDTO devTaskAssignmentDTO){
+    public ResponseEntity<Void> assignTaskToDev(@PathVariable Long taskId , @RequestBody DevTaskAssignmentDTO devTaskAssignmentDTO){
         taskService.assignTaskToDeveloper(taskId,devTaskAssignmentDTO.developerId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("{taskId}/assignTester")
-    public void assignTaskToTester(@PathVariable Long taskId , @RequestBody TesterTaskAssignmentDTO testerTaskAssignmentDTO) {
+    public ResponseEntity<Void> assignTaskToTester(@PathVariable Long taskId , @RequestBody TesterTaskAssignmentDTO testerTaskAssignmentDTO) {
         taskService.assignTaskToTester(taskId, testerTaskAssignmentDTO.testerId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
-
-
