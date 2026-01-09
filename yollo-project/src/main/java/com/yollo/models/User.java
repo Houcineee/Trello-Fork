@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,13 +32,13 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "developer", fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<Task> devTask;
+    private List<Task> devTask = new ArrayList<>();
 
     @OneToMany(mappedBy = "tester", fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<Task> testTask;
+    private List<Task> testTask = new ArrayList<>();
 
     @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
     @ToString.Exclude
-    private Set<ProductBacklog> productBacklogs;
+    private Set<ProductBacklog> productBacklogs = new HashSet<>();
 }

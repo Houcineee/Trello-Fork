@@ -7,7 +7,7 @@ import com.yollo.dtos.UserResponseDTO;
 public interface UserService {
     UserResponseDTO getUserById(Long id);
     UserResponseDTO createUser(UserRequestDTO userRequestDTO);
-    UserResponseDTO updateUser(UserPatchDTO userPatchDTO);
+    UserResponseDTO updateUser(Long userId , UserPatchDTO userPatchDTO);
     void deleteUser(Long id);
 
 }

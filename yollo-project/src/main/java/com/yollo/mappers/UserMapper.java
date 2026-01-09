@@ -8,6 +8,7 @@ import com.yollo.models.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(
         componentModel = "spring",
@@ -21,6 +22,9 @@ public interface UserMapper {
     @Mapping(target="testTask", ignore = true)
     @Mapping(target = "devTask", ignore = true)
     @Mapping(target="productBacklogs", ignore = true)
+    @Mapping(target="password", ignore = true)
+    @Mapping(target="email", source = "email" , qualifiedByName = "toLowerCase")
+    @Mapping(target="username", source = "username" , qualifiedByName = "toLowerCase")
     User toEntity(UserRequestDTO userRequestDTO);
 
     UserResponseDTO toDTO(User user) ;
@@ -33,9 +37,17 @@ public interface UserMapper {
     @Mapping(target = "devTask", ignore = true)
     @Mapping(target="productBacklogs", ignore = true)
     @Mapping(target="password", ignore = true)
-    void updateUserFromDTO(UserPatchDTO userPatchDTO, @MappingTarget User user);
+    @Mapping(target="role", ignore = true)
+    @Mapping(target="email", source = "email" , qualifiedByName = "toLowerCase")
+    @Mapping(target="username", source = "username" , qualifiedByName = "toLowerCase")
+    void updateUserFromPatch(UserPatchDTO userPatchDTO, @MappingTarget User user);
 
-
-
+    @Named("toLowerCase")
+    default String toLowerCase(String value) {
+        if (value == null) {
+            return null;
+        }
+        return value.trim().toLowerCase();
+    }
 
 }
