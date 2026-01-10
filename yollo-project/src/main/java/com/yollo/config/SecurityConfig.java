@@ -2,6 +2,9 @@ package com.yollo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,12 +20,28 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable) // Allow Postman requests
+        http.csrf(AbstractHttpConfigurer::disable) // Allow Postman requests
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Allow EVERYTHING (No login needed)
+//                        .anyRequest().permitAll()
+                                .requestMatchers(
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/api/auth/**"
+                                )
+
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
                 );
 
         return http.build();
+    }
+    @Bean
+    public AuthenticationManager authenticationManagerBean(
+            AuthenticationConfiguration config
+
+    ) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
