@@ -3,6 +3,7 @@ package com.yollo.exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,6 +25,10 @@ public class GlobalExceptionHandler {
         // to be deleted in the production
         ex.printStackTrace();
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+    }
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ProblemDetail handleForbidden(AuthorizationDeniedException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access is denied");
     }
 }
 

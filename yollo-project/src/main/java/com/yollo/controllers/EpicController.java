@@ -6,6 +6,7 @@ import com.yollo.services.UserStoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +28,14 @@ public class EpicController {
 
 
 
+  @PreAuthorize("hasRole('PM')")
   @PatchMapping("/{epicId}")
     public ResponseEntity<EpicResponseDTO> updateEpic(@PathVariable Long epicId, @RequestBody @Valid EpicPatchDTO epicPatchDTO) {
         return ResponseEntity.ok(epicService.updateEpic(epicId, epicPatchDTO));
     }
 
 
+   @PreAuthorize("hasRole('PM')")
   @DeleteMapping("/{epicId}")
     public  ResponseEntity<Void> deleteEpic(@PathVariable Long epicId) {
         epicService.deleteEpic(epicId);
@@ -44,6 +47,7 @@ public class EpicController {
         return ResponseEntity.ok(userStoryService.getUserStoriesByEpicId(epicId)) ;
     }
 
+    @PreAuthorize("hasRole('SM')")
   @PostMapping("/{epicId}/stories")
     public ResponseEntity<UserStoryResponseDTO> createUserStory(@PathVariable Long epicId, @RequestBody @Valid UserStoryRequestDTO userStoryRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userStoryService.createUserStory(epicId, userStoryRequestDTO));

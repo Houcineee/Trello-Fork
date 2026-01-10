@@ -9,6 +9,7 @@ import com.yollo.services.UserStoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,11 +31,13 @@ public class SprintController {
         return ResponseEntity.ok(userStoryService.getUserStoriesBySprintId(sprintId));
     }
 
+    @PreAuthorize("hasAnyRole('SM')")
     @PatchMapping("{sprintId}")
     public ResponseEntity<SprintResponseDTO> updateSprint(@PathVariable Long sprintId, @RequestBody SprintPatchDTO sprintPatchDTO) {
         return ResponseEntity.ok(sprintService.updateSprint(sprintId, sprintPatchDTO));
     }
 
+    @PreAuthorize("hasAnyRole('SM')")
     @DeleteMapping("{sprintId}")
     public ResponseEntity<Void> deleteSprint(@PathVariable Long sprintId) {
         sprintService.deleteSprint(sprintId);

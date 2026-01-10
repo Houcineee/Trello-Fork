@@ -9,6 +9,7 @@ import com.yollo.services.UserStoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,17 +27,20 @@ public class UserStoryController {
         return ResponseEntity.ok(userStoryService.getUserStoryById(storyId));
     }
 
+    @PreAuthorize("hasRole('SM')")
     @PatchMapping("{storyId}")
     public ResponseEntity<UserStoryResponseDTO> updateUserStory(@PathVariable Long storyId, @RequestBody UserStoryPatchDTO userStoryPatchDTO) {
         return ResponseEntity.ok(userStoryService.updateUserStory(storyId,userStoryPatchDTO ));
     }
 
+    @PreAuthorize("hasRole('SM')")
     @PostMapping("{storyId}/sprint/{sprintId}")
     public ResponseEntity<Void> assignUserStoryToSprint(@PathVariable Long storyId, @PathVariable Long sprintId) {
         userStoryService.addUserStoryToSprint(storyId,sprintId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PreAuthorize("hasRole('SM')")
     @DeleteMapping("{storyId}")
     public ResponseEntity<Void> deleteUserStory(@PathVariable Long storyId) {
         userStoryService.deleteUserStory(storyId);
@@ -50,6 +54,7 @@ public class UserStoryController {
 
     }
 
+    @PreAuthorize("hasRole('SM')")
     @PostMapping("{storyId}/tasks")
     public ResponseEntity<TaskResponseDTO> createUserStoryTask(@PathVariable Long storyId, @RequestBody TaskRequestDTO taskRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(storyId, taskRequestDTO));

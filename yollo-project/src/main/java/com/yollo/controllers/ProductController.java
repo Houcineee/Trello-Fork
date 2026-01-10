@@ -7,6 +7,8 @@ import com.yollo.services.SprintService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class ProductController {
     private final ProductService productService;
     private final SprintService sprintService;
@@ -26,6 +29,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductForUser(userId));
     }
 
+    @PreAuthorize("hasRole('PM')")
     @PostMapping("user/{userId}")
     public ResponseEntity<ProductResponseDTO> createProduct(@PathVariable  Long userId, @RequestBody @Valid ProductRequestDTO productRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(userId, productRequestDTO));
@@ -33,6 +37,7 @@ public class ProductController {
 
 
 
+    @PreAuthorize("hasRole('PM')")
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long productId, @RequestBody ProductPatchDTO productPatchDTO) {
         return ResponseEntity.ok(productService.updateProduct(productId, productPatchDTO));
@@ -51,18 +56,22 @@ public class ProductController {
         return ResponseEntity.ok(productService.getMembers(productId));
     }
 
+
+    @PreAuthorize("hasAnyRole('PM', 'SM')")
     @PostMapping("/{productId}/members/{userId}")
     public ResponseEntity<Void> inviteMember(@PathVariable Long productId, @PathVariable  Long userId) {
         productService.inviteMember(productId, userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PreAuthorize("hasAnyRole('PM', 'SM')")
     @DeleteMapping("/{productId}/members/{userId}")
     public ResponseEntity<Void> removeMember(@PathVariable Long productId, @PathVariable Long userId) {
         productService.removeMember(productId, userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PreAuthorize("hasAnyRole('PM')")
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
@@ -75,6 +84,7 @@ public class ProductController {
     }
 
 
+    @PreAuthorize("hasAnyRole('SM')")
     @PostMapping("/{productId}/sprints")
     public ResponseEntity<SprintResponseDTO> createSprint(@PathVariable Long productId, @RequestBody @Valid SprintRequestDTO sprintRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(sprintService.createSprint(productId, sprintRequestDTO));
@@ -86,6 +96,7 @@ public class ProductController {
     }
 
 
+    @PreAuthorize("hasAnyRole('PM')")
     @PostMapping("/{productId}/epics")
     public ResponseEntity<EpicResponseDTO> createEpic(@PathVariable Long productId, @RequestBody @Valid EpicRequestDTO epicRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(epicService.createEpic(productId, epicRequestDTO));
