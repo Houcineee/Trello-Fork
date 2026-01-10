@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Stream;
+import com.yollo.exceptions.ResourceNotFoundException;
 
 @Service
 @Transactional
@@ -34,7 +35,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskResponseDTO> getTasksByStoryId(Long storyId) {
         UserStory userStory = userStoryRepository.findById(storyId)
-                .orElseThrow(() -> new RuntimeException("User Story not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("UserStory", "id", storyId)) ;
 
         return userStory.getTasks()
                 .stream()
@@ -45,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponseDTO getTaskById(Long id) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
         return taskMapper.toDTO(task) ;
     }
 
@@ -53,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
     @ResponseStatus(HttpStatus.CREATED)
     public TaskResponseDTO createTask(Long userStoryId , TaskRequestDTO taskRequestDTO) {
         UserStory userStory = userStoryRepository.findById(userStoryId)
-                .orElseThrow(() -> new RuntimeException("User Story not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("UserStory", "id", userStoryId)) ;
         Task task = taskMapper.toEntity(taskRequestDTO) ;
         task.setUserStory(userStory);
         Task savedTask = taskRepository.save(task) ;
@@ -63,7 +64,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponseDTO updateTask(Long taskId, TaskPatchDTO taskPatchDTO) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId)) ;
 
         taskMapper.updateTaskFromPatch(taskPatchDTO, task);
         return taskMapper.toDTO(task) ;
@@ -73,20 +74,20 @@ public class TaskServiceImpl implements TaskService {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId)) ;
         taskRepository.delete(task);
     }
 
     @Override
     public void assignTaskToDeveloper(Long taskId, Long developerId) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId)) ;
 
         if(developerId == null){ // unassigning the developer
             task.setDeveloper(null);
         }else{// assigning the developer
             User developer = userRepository.findById(developerId)
-                    .orElseThrow(() -> new RuntimeException("Developer not found")) ;
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", developerId)) ;
             task.setDeveloper(developer);
 
         }
@@ -96,13 +97,13 @@ public class TaskServiceImpl implements TaskService {
     public void assignTaskToTester(Long taskId, Long testerId) {
 
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId)) ;
 
         if (testerId == null){ // unassigning the tester
             task.setTester(null);
         }else{ //   assigning the tester
             User tester= userRepository.findById(testerId)
-                    .orElseThrow(() -> new RuntimeException("Tester not found")) ;
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", testerId)) ;
 
             task.setTester(tester);
         }

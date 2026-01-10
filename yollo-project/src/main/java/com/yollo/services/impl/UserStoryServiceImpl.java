@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import com.yollo.exceptions.ResourceNotFoundException;
 
 @Service
 @Transactional
@@ -39,7 +40,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     public UserStoryResponseDTO getUserStoryById(Long userStoryId) {
         UserStory userStory = userStoryRepository.findById(userStoryId)
-                .orElseThrow(() -> new RuntimeException("User Story not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("UserStory", "id", userStoryId));
 
         return userStoryMapper.toDTO(userStory);
     }
@@ -48,7 +49,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     public UserStoryResponseDTO createUserStory(Long epicId, UserStoryRequestDTO userStoryRequestDTO) {
         UserStory userStory = userStoryMapper.toEntity(userStoryRequestDTO);
         Epic epic = epicRepository.findById(epicId)
-                .orElseThrow(() -> new RuntimeException("Epic not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Epic", "id", epicId));
         userStory.setEpic(epic);
         UserStory savedUserStory = userStoryRepository.save(userStory);
         return userStoryMapper.toDTO(savedUserStory);
@@ -57,7 +58,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     public UserStoryResponseDTO updateUserStory(Long userStoryId, UserStoryPatchDTO userStoryPatchDTO) {
         UserStory userStory = userStoryRepository.findById(userStoryId)
-                .orElseThrow(() -> new RuntimeException("User Story not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("UserStory", "id", userStoryId));
         userStoryMapper.updateUserStoryFromPatch(userStoryPatchDTO, userStory);
         return userStoryMapper.toDTO(userStory);
     }
@@ -65,14 +66,14 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     public void deleteUserStory(Long userStoryId) {
         UserStory userStory = userStoryRepository.findById(userStoryId)
-                .orElseThrow(() -> new RuntimeException("User Story not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("UserStory", "id", userStoryId));
         userStoryRepository.delete(userStory);
     }
 
     @Override
     public List<UserStoryResponseDTO> getUserStoriesBySprintId(Long sprintId) {
         SprintBacklog sprintBacklog = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new RuntimeException("Sprint not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("SprintBacklog", "id", sprintId));
         Set<UserStory> userStories = sprintBacklog.getUserStoriesSprint();
         return userStories.stream()
                 .map(userStoryMapper::toDTO)
@@ -82,9 +83,9 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     public void addUserStoryToSprint(Long userStoryId, Long sprintId) {
         UserStory userStory = userStoryRepository.findById(userStoryId)
-                .orElseThrow(() -> new RuntimeException("User Story not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("UserStory", "id", userStoryId));
         SprintBacklog sprintBacklog = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new RuntimeException("Sprint not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("SprintBacklog", "id", sprintId));
 
         userStory.getSprintBacklogs().add(sprintBacklog);
     }

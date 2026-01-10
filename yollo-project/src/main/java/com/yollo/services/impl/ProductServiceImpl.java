@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import com.yollo.exceptions.ResourceNotFoundException;
 
 @Service
 @Transactional
@@ -30,9 +31,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDTO createProduct(Long currentUserId, ProductRequestDTO productRequestDTO) {
         ProductBacklog productBacklog = productMapper.toEntity(productRequestDTO);
         User currentUser = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", currentUserId));
 
-        System.out.println("this : " + productBacklog.getMembers());
 
         productBacklog.getMembers().add(currentUser);
         ProductBacklog savedProduct = productRepository.save(productBacklog);
@@ -43,14 +43,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO getProductById(Long productId) {
         ProductBacklog productBacklog = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("ProductBacklog", "id", productId));
         return productMapper.toDTO(productBacklog);
     }
 
     @Override
     public List<ProductResponseDTO> getProductForUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         return user.getProductBacklogs()
                 .stream()
@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO updateProduct(Long productId, ProductPatchDTO productPatchDTO) {
         ProductBacklog productBacklog = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("ProductBacklog", "id", productId));
 
         productMapper.updateProductFromPatch(productPatchDTO, productBacklog);
         return productMapper.toDTO(productBacklog);
@@ -78,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<UserResponseDTO> getMembers(Long productId) {
         ProductBacklog productBacklog = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("ProductBacklog not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("ProductBacklog", "id", productId));
 
         return productBacklog.getMembers()
                 .stream()
@@ -91,10 +91,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void inviteMember(Long productId, Long userId) {
         ProductBacklog productBacklog = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("ProductBacklog not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("ProductBacklog", "id", productId));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
+        // TODO: implement equals and hashcode in User entity
         if (!productBacklog.getMembers().contains(user)) {
             productBacklog.getMembers().add(user);
         }
@@ -103,9 +104,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void removeMember(Long productId, Long userId) {
         ProductBacklog productBacklog = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("ProductBacklog not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("ProductBacklog", "id", productId));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         productBacklog.getMembers().remove(user);
     }

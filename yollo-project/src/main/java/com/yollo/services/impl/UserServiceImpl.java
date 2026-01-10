@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.yollo.exceptions.ResourceNotFoundException;
 
 @Service
 @Transactional
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
         return userMapper.toDTO(user);
     }
 
@@ -45,10 +46,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String normalizedUsername = userRequestDTO.username().trim().toLowerCase();
         String normalizedEmail = userRequestDTO.email().trim().toLowerCase();
         if (userRepository.existsByUsername(normalizedUsername)) {
-            throw new RuntimeException("Username already exists");
+            throw new IllegalArgumentException("Username already exists");
         }
         if (userRepository.existsByEmail(normalizedEmail)) {
-            throw new RuntimeException("Email already exists");
+            throw new IllegalArgumentException("Email already exists");
         }
         User user = userMapper.toEntity(userRequestDTO);
         String hashedPassword = passwordEncoder.encode(userRequestDTO.password());
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserResponseDTO updateUser(Long userId , UserPatchDTO userPatchDTO) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         userMapper.updateUserFromPatch(userPatchDTO, user);
 
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
         userRepository.delete(user);
     }
 

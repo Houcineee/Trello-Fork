@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import com.yollo.exceptions.ResourceNotFoundException;
 
 @Service
 @Transactional
@@ -26,7 +27,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public List<SprintResponseDTO> getSprintsByProductId(Long productId) {
         ProductBacklog productBacklog = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("ProductBacklog", "id", productId)) ;
 
         return productBacklog.getSprintBacklogs()
                 .stream()
@@ -37,7 +38,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintResponseDTO getSprintById(Long id) {
         SprintBacklog sprintBacklog =  sprintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sprint not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("SprintBacklog", "id", id));
         return sprintMapper.toDTO(sprintBacklog) ;
     }
 
@@ -45,7 +46,7 @@ public class SprintServiceImpl implements SprintService {
     public SprintResponseDTO createSprint(Long productBacklogId , SprintRequestDTO sprintRequestDTO) {
         SprintBacklog sprintBacklog = sprintMapper.toEntity(sprintRequestDTO) ;
         ProductBacklog productBacklog = productRepository.findById(productBacklogId)
-                .orElseThrow(() -> new RuntimeException("Product not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("ProductBacklog", "id", productBacklogId)) ;
         sprintBacklog.setProductBacklog(productBacklog);
         sprintBacklog = sprintRepository.save(sprintBacklog) ;
         return sprintMapper.toDTO(sprintBacklog) ;
@@ -54,7 +55,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public SprintResponseDTO updateSprint(Long sprintId, SprintPatchDTO sprintPatchDTO) {
         SprintBacklog sprintBacklog = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new RuntimeException("Sprint not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("SprintBacklog", "id", sprintId)) ;
 
         sprintMapper.updateSprintFromPatch( sprintPatchDTO, sprintBacklog);
 
@@ -65,7 +66,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public void deleteSprint(Long sprintId) {
         SprintBacklog sprintBacklog = sprintRepository.findById(sprintId)
-                .orElseThrow(() -> new RuntimeException("Sprint not found")) ;
+                .orElseThrow(() -> new ResourceNotFoundException("SprintBacklog", "id", sprintId)) ;
         sprintRepository.delete(sprintBacklog);
     }
 
