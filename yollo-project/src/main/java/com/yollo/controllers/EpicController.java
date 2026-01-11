@@ -13,45 +13,48 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/epics") // base url
+@RequestMapping("/api/products/{productId}/epics") // base url
 @RequiredArgsConstructor
 public class EpicController {
-    private final UserStoryService userStoryService;
     private final EpicService epicService;
 
 
 
+    @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'PM')")
+    @PostMapping
+    public ResponseEntity<EpicResponseDTO> createEpic(@PathVariable Long productId, @RequestBody @Valid EpicRequestDTO epicRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(epicService.createEpic(productId, epicRequestDTO));
+    }
+
     @GetMapping("/{epicId}")
-    public ResponseEntity<EpicResponseDTO> getEpicById(@PathVariable Long epicId) {
+    // auth if the user is a member
+    public ResponseEntity<EpicResponseDTO> getEpicById(@PathVariable Long productId , @PathVariable Long epicId) {
         return ResponseEntity.ok(epicService.getEpicById(epicId));
     }
 
 
 
-  @PreAuthorize("hasRole('PM')")
+  @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'PM')")
   @PatchMapping("/{epicId}")
-    public ResponseEntity<EpicResponseDTO> updateEpic(@PathVariable Long epicId, @RequestBody @Valid EpicPatchDTO epicPatchDTO) {
+    public ResponseEntity<EpicResponseDTO> updateEpic(@PathVariable Long productId ,@PathVariable Long epicId, @RequestBody @Valid EpicPatchDTO epicPatchDTO) {
         return ResponseEntity.ok(epicService.updateEpic(epicId, epicPatchDTO));
     }
 
 
-   @PreAuthorize("hasRole('PM')")
-  @DeleteMapping("/{epicId}")
-    public  ResponseEntity<Void> deleteEpic(@PathVariable Long epicId) {
+   @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'PM')")
+   @DeleteMapping("/{epicId}")
+    public  ResponseEntity<Void> deleteEpic(@PathVariable Long productId ,@PathVariable Long epicId) {
         epicService.deleteEpic(epicId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-  @GetMapping("/{epicId}/stories")
-    public ResponseEntity<List<UserStoryResponseDTO>> getUserStoriesByEpicId(@PathVariable Long epicId) {
-        return ResponseEntity.ok(userStoryService.getUserStoriesByEpicId(epicId)) ;
+
+    @GetMapping
+    // auth if the user is a member
+    public ResponseEntity<List<EpicResponseDTO>> getEpicsByProjectId(@PathVariable Long productId) {
+        return ResponseEntity.ok(epicService.getEpicsByProjectId(productId));
     }
 
-    @PreAuthorize("hasRole('SM')")
-  @PostMapping("/{epicId}/stories")
-    public ResponseEntity<UserStoryResponseDTO> createUserStory(@PathVariable Long epicId, @RequestBody @Valid UserStoryRequestDTO userStoryRequestDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userStoryService.createUserStory(epicId, userStoryRequestDTO));
-    }
 
 
 }
