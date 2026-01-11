@@ -16,7 +16,7 @@ import java.util.List;
 public class TaskController {
     final private TaskService taskService;
 
-    // o.m
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @GetMapping("stories/{storyId}/tasks")
     public ResponseEntity<List<TaskResponseDTO>> getUserStoryTask(@PathVariable Long productId , @PathVariable Long storyId) {
         return ResponseEntity.ok(taskService.getTasksByStoryId(storyId));
@@ -30,13 +30,14 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(storyId, taskRequestDTO));
     }
 
-    // o.m
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @GetMapping("tasks/{taskId}")
     public ResponseEntity<TaskResponseDTO> getTask(@PathVariable Long productId ,@PathVariable Long taskId){
         return ResponseEntity.ok(taskService.getTaskById(taskId));
     }
 
-    @PreAuthorize("hasAnyRole('SM','DEVELOPER','TESTER')")
+
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @PatchMapping("tasks/{taskId}")
     public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long productId , @PathVariable Long taskId, @RequestBody TaskPatchDTO taskPatchDTO){
         return ResponseEntity.ok(taskService.updateTask(taskId, taskPatchDTO)) ;
@@ -52,7 +53,7 @@ public class TaskController {
 
     @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'DEVELOPER')")
     @PatchMapping("tasks/{taskId}/assignDev")
-    public ResponseEntity<Void> assignTaskToDev(@PathVariable Long taskId , @RequestBody DevTaskAssignmentDTO devTaskAssignmentDTO){
+    public ResponseEntity<Void> assignTaskToDev(@PathVariable Long productId , @PathVariable Long taskId , @RequestBody DevTaskAssignmentDTO devTaskAssignmentDTO){
         taskService.assignTaskToDeveloper(taskId,devTaskAssignmentDTO.developerId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -60,7 +61,7 @@ public class TaskController {
 
     @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'TESTER')")
     @PatchMapping("tasks/{taskId}/assignTester")
-    public ResponseEntity<Void> assignTaskToTester(@PathVariable Long taskId , @RequestBody TesterTaskAssignmentDTO testerTaskAssignmentDTO) {
+    public ResponseEntity<Void> assignTaskToTester(@PathVariable Long productId , @PathVariable Long taskId , @RequestBody TesterTaskAssignmentDTO testerTaskAssignmentDTO) {
         taskService.assignTaskToTester(taskId, testerTaskAssignmentDTO.testerId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

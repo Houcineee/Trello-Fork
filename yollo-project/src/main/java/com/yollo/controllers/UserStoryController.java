@@ -18,7 +18,7 @@ import java.util.List;
 public class UserStoryController {
     private final UserStoryService userStoryService;
 
-// o.m
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @GetMapping("stories/{storyId}")
     public ResponseEntity<UserStoryResponseDTO> getUserStory(@PathVariable Long productId , @PathVariable Long storyId) {
         return ResponseEntity.ok(userStoryService.getUserStoryById(storyId));
@@ -46,7 +46,7 @@ public class UserStoryController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // o.m
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @GetMapping("epics/{epicId}/stories")
     public ResponseEntity<List<UserStoryResponseDTO>> getUserStoriesByEpicId(@PathVariable Long productId ,@PathVariable Long epicId) {
         return ResponseEntity.ok(userStoryService.getUserStoriesByEpicId(epicId)) ;

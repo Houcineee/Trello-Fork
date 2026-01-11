@@ -27,7 +27,7 @@ public class EpicController {
     }
 
     @GetMapping("/{epicId}")
-    // auth if the user is a member
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     public ResponseEntity<EpicResponseDTO> getEpicById(@PathVariable Long productId , @PathVariable Long epicId) {
         return ResponseEntity.ok(epicService.getEpicById(epicId));
     }
@@ -50,7 +50,7 @@ public class EpicController {
 
 
     @GetMapping
-    // auth if the user is a member
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     public ResponseEntity<List<EpicResponseDTO>> getEpicsByProjectId(@PathVariable Long productId) {
         return ResponseEntity.ok(epicService.getEpicsByProjectId(productId));
     }

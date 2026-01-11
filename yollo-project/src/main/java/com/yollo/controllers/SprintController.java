@@ -29,12 +29,13 @@ public class SprintController {
         return ResponseEntity.status(HttpStatus.CREATED).body(sprintService.createSprint(productId, sprintRequestDTO));
     }
 
-    // o.m
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @GetMapping("sprints/{sprintId}")
     public ResponseEntity<SprintResponseDTO> getSprintById(@PathVariable Long productId , @PathVariable Long sprintId) {
         return ResponseEntity.ok(sprintService.getSprintById(sprintId));
     }
 
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @GetMapping("sprints/{sprintId}/stories")
     public ResponseEntity<List<UserStoryResponseDTO>> getUserStories(@PathVariable Long productId , @PathVariable Long sprintId) {
         return ResponseEntity.ok(userStoryService.getUserStoriesBySprintId(sprintId));
@@ -53,6 +54,7 @@ public class SprintController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @GetMapping("sprints")
     public ResponseEntity<List<SprintResponseDTO>> getSprints(@PathVariable Long productId) {
         return ResponseEntity.ok(sprintService.getSprintsByProductId(productId));

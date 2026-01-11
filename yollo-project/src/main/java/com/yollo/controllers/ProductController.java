@@ -26,6 +26,7 @@ public class ProductController {
 
 
 
+    @PreAuthorize("@projectAuth.isTheOwner(#userId, authentication)")
     @GetMapping("user/{userId}")
     public ResponseEntity<List<ProductResponseDTO>> getProductsByUserId(@PathVariable  Long userId) {
         return ResponseEntity.ok(productService.getProductForUser(userId));
@@ -41,7 +42,7 @@ public class ProductController {
     }
 
 
-    // check if the user is a member of the product
+    @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
    @GetMapping("/{productId}")
    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long productId) {
          return ResponseEntity.ok(productService.getProductById(productId));
@@ -55,14 +56,15 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-   // check if the user is a member of the product
+   @PreAuthorize("@projectAuth.isMemberOfProject(#productId, authentication)")
     @GetMapping("/{productId}/members")
     public ResponseEntity<List<UserResponseDTO>> getMembers(@PathVariable Long productId) {
         return ResponseEntity.ok(productService.getMembers(productId));
     }
 
 
-    @PreAuthorize("hasAnyRole('PM', 'SM')")
+
+    @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'PM', 'SM')")
     @PostMapping("/{productId}/members/{userId}")
     public ResponseEntity<Void> inviteMember(@PathVariable Long productId, @PathVariable  Long userId) {
         productService.inviteMember(productId, userId);
@@ -70,7 +72,7 @@ public class ProductController {
     }
 
 
-    @PreAuthorize("hasAnyRole('PM', 'SM')")
+    @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'PM', 'SM')")
     @DeleteMapping("/{productId}/members/{userId}")
     public ResponseEntity<Void> removeMember(@PathVariable Long productId, @PathVariable Long userId) {
         productService.removeMember(productId, userId);
