@@ -3,6 +3,7 @@ package com.yollo.services.impl;
 import com.yollo.dtos.EpicPatchDTO;
 import com.yollo.dtos.EpicRequestDTO;
 import com.yollo.dtos.EpicResponseDTO;
+import com.yollo.exceptions.ResourceNotFoundException;
 import com.yollo.mappers.EpicMapper;
 import com.yollo.models.Epic;
 import com.yollo.models.ProductBacklog;
@@ -27,7 +28,7 @@ public class EpicServiceImpl implements EpicService {
     public List<EpicResponseDTO> getEpicsByProjectId(Long productId) {
         // check if the project exists
         if (!productRepository.existsById(productId)) {
-            throw new RuntimeException("Project not found");
+            throw new ResourceNotFoundException("Project", "id", productId);
         }
 
         List<Epic> epics = epicRepository.findByProductBacklogId(productId);
@@ -38,7 +39,7 @@ public class EpicServiceImpl implements EpicService {
     @Override
     public EpicResponseDTO getEpicById(Long epicId) {
         Epic epic = epicRepository.findById(epicId)
-                .orElseThrow(() -> new RuntimeException("Epic not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Epic", "id", epicId));
 
         return epicMapper.toDTO(epic);
     }
@@ -47,7 +48,9 @@ public class EpicServiceImpl implements EpicService {
     public EpicResponseDTO createEpic(Long productId , EpicRequestDTO epicRequestDTO) {
         Epic epic = epicMapper.toEntity(epicRequestDTO);
         ProductBacklog productBacklog = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product Backlog not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Project", "id", productId));
+
         epic.setProductBacklog(productBacklog);
 
         Epic savedEpic = epicRepository.save(epic);
@@ -58,7 +61,8 @@ public class EpicServiceImpl implements EpicService {
     @Override
     public EpicResponseDTO updateEpic(Long epicId, EpicPatchDTO epicPatchDTO) {
         Epic epic = epicRepository.findById(epicId)
-                .orElseThrow(() -> new RuntimeException("Epic not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Epic", "id", epicId));
 
         epicMapper.updateEpicFromPatch(epicPatchDTO, epic);
         return epicMapper.toDTO(epic);
@@ -67,7 +71,8 @@ public class EpicServiceImpl implements EpicService {
     @Override
     public void deleteEpic(Long epicId) {
         Epic epic = epicRepository.findById(epicId)
-                .orElseThrow(() -> new RuntimeException("Epic not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Epic", "id", epicId));
         epicRepository.delete(epic);
     }
 

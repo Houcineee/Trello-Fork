@@ -1,5 +1,6 @@
 package com.yollo.controllers;
 
+import com.yollo.config.ProjectAuth;
 import com.yollo.dtos.*;
 import com.yollo.services.EpicService;
 import com.yollo.services.ProductService;
@@ -17,11 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@EnableMethodSecurity
 public class ProductController {
     private final ProductService productService;
     private final SprintService sprintService;
     private final EpicService epicService;
+    private final ProjectAuth projectAuth;
 
 
     @GetMapping("user/{userId}")
@@ -37,7 +38,8 @@ public class ProductController {
 
 
 
-    @PreAuthorize("hasRole('PM')")
+
+    @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'PM')")
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long productId, @RequestBody ProductPatchDTO productPatchDTO) {
         return ResponseEntity.ok(productService.updateProduct(productId, productPatchDTO));
@@ -84,7 +86,8 @@ public class ProductController {
     }
 
 
-    @PreAuthorize("hasAnyRole('SM')")
+
+    @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'SM')")
     @PostMapping("/{productId}/sprints")
     public ResponseEntity<SprintResponseDTO> createSprint(@PathVariable Long productId, @RequestBody @Valid SprintRequestDTO sprintRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(sprintService.createSprint(productId, sprintRequestDTO));
@@ -96,7 +99,8 @@ public class ProductController {
     }
 
 
-    @PreAuthorize("hasAnyRole('PM')")
+//    @PreAuthorize("hasAnyRole('PM')")
+    @PreAuthorize("@projectAuth.hasRoleInProject(#productId, authentication, 'PM')")
     @PostMapping("/{productId}/epics")
     public ResponseEntity<EpicResponseDTO> createEpic(@PathVariable Long productId, @RequestBody @Valid EpicRequestDTO epicRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(epicService.createEpic(productId, epicRequestDTO));

@@ -1,9 +1,12 @@
 package com.yollo.exceptions;
 
+import jakarta.persistence.ElementCollection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -30,5 +33,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleForbidden(AuthorizationDeniedException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access is denied");
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        StringBuilder errors = new StringBuilder();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.append(error.getField()).append(": ").append(error.getDefaultMessage()).append("; ")
+        );
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errors.toString());
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleBadCredentials(BadCredentialsException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+    }
+
 }
 
