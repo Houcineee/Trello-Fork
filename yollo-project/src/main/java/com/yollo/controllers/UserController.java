@@ -54,5 +54,10 @@ public class UserController {
         return ResponseEntity.ok(taskService.getTasksByUserId(userId));
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers(){
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
 
 }

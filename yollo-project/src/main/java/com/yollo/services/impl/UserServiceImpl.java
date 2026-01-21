@@ -77,4 +77,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepository.delete(user);
     }
 
+    @Override
+    public java.util.List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDTO)
+                .toList();
+    }
+
 }

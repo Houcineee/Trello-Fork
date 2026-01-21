@@ -4,11 +4,13 @@ import com.yollo.dtos.UserPatchDTO;
 import com.yollo.dtos.UserRequestDTO;
 import com.yollo.dtos.UserResponseDTO;
 
+import java.util.List;
+
 public interface UserService {
     UserResponseDTO getUserById(Long id);
     UserResponseDTO createUser(UserRequestDTO userRequestDTO);
     UserResponseDTO updateUser(Long userId , UserPatchDTO userPatchDTO);
     void deleteUser(Long id);
+    List<UserResponseDTO> getAllUsers();
 
 }
-
