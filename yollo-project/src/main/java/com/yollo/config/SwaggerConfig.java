@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(title = "Yollo API", version = "1.0"),
-        // This makes the "Lock" icon appear on all endpoints
         security = { @SecurityRequirement(name = "bearerAuth") }
 )
 @SecurityScheme(
